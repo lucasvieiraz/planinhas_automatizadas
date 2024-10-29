@@ -1,6 +1,7 @@
 import pytest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 import openpyxl
 import os
 import sys
@@ -9,9 +10,13 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../s
 
 @pytest.fixture
 def driver():
-    driver = webdriver.Chrome()
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")  # Adiciona o modo headless
+    chrome_options.add_argument("--no-sandbox")  # Necessário para contornar restrições de sandbox
+    chrome_options.add_argument("--disable-dev-shm-usage")  # Ajuda a prevenir problemas de memória
+    driver = webdriver.Chrome(options=chrome_options)
     yield driver
-    driver.quit()
+    driver.quit() 
 
 def test_page_load(driver):
     driver.get('https://www.novaliderinformatica.com.br/computadores')
